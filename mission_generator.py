@@ -48,62 +48,130 @@ def parse_missions(file_paths: List[str]):
             })
     return all_missions
 
-def select_missions_deck_draw(missions: List[dict], num_players: int, target_difficulty: int) -> List[Tuple[int, int, str]]:
+def select_missions_deck_draw(missions: List[dict], num_players: int, target_difficulty: int, max_attempts: int = 100) -> Tuple[List[Tuple[int, int, str]], dict]:
     """
     Simulate drawing task cards from a shuffled deck according to official rules:
     Keep drawing cards until the sum matches the target difficulty exactly.
     Skip cards that would exceed the target.
+    Try multiple attempts and return best available if exact match not found.
     """
     idx = num_players - 3
-    # Shuffle the deck of missions
-    shuffled_missions = missions.copy()
-    random.shuffle(shuffled_missions)
+    best_result = []
+    best_distance = float('inf')
+    best_info = {}
     
-    selected = []
-    total = 0
-    cards_drawn = 0
-    skipped_cards = []
-    
-    for mission in shuffled_missions:
-        cards_drawn += 1
-        diff = mission['difficulty'][idx]
+    for attempt in range(max_attempts):
+        # Shuffle the deck of missions
+        shuffled_missions = missions.copy()
+        random.shuffle(shuffled_missions)
         
-        if total + diff <= target_difficulty:
-            # We can take this card
-            selected.append((mission['id'], diff, mission['description']))
-            total += diff
+        selected = []
+        total = 0
+        cards_drawn = 0
+        skipped_cards = []
+        
+        for mission in shuffled_missions:
+            cards_drawn += 1
+            diff = mission['difficulty'][idx]
             
-            if total == target_difficulty:
-                # We've reached the exact target
-                break
-        else:
-            # Skip this card as it would exceed the target
-            skipped_cards.append((mission['id'], diff, mission['description']))
+            if total + diff <= target_difficulty:
+                # We can take this card
+                selected.append((mission['id'], diff, mission['description']))
+                total += diff
+                
+                if total == target_difficulty:
+                    # We've reached the exact target
+                    return selected, {
+                        'attempts': attempt + 1,
+                        'exactMatch': True,
+                        'distance': 0,
+                        'cards_drawn': cards_drawn,
+                        'skipped': len(skipped_cards)
+                    }
+            else:
+                # Skip this card as it would exceed the target
+                skipped_cards.append((mission['id'], diff, mission['description']))
+        
+        # Track the best result so far (closest to target without exceeding)
+        distance = target_difficulty - total
+        if total > 0 and distance >= 0 and distance < best_distance:
+            best_distance = distance
+            best_result = selected.copy()
+            best_info = {
+                'attempts': attempt + 1,
+                'exactMatch': False,
+                'distance': distance,
+                'cards_drawn': cards_drawn,
+                'skipped': len(skipped_cards),
+                'closeMatch': distance <= 2
+            }
+        
+        # If we got very close (within 1-2 of target), we can return early
+        if total >= target_difficulty - 2 and total <= target_difficulty:
+            return selected, {
+                'attempts': attempt + 1,
+                'exactMatch': False,
+                'distance': distance,
+                'cards_drawn': cards_drawn,
+                'skipped': len(skipped_cards),
+                'closeMatch': True
+            }
     
-    if total != target_difficulty:
-        return []  # Couldn't reach exact target with available cards
-    
-    return selected
+    # Return the best result we found, even if it's not perfect
+    return best_result, best_info
 
-def select_missions(missions: List[dict], num_players: int, target_difficulty: int) -> List[Tuple[int, int, str]]:
+def select_missions(missions: List[dict], num_players: int, target_difficulty: int, max_attempts: int = 50) -> Tuple[List[Tuple[int, int, str]], dict]:
     """
-    Legacy greedy selection method (kept for compatibility)
+    Legacy greedy selection method with improved retry logic
     """
     idx = num_players - 3
-    # Simple greedy random approach
-    random.shuffle(missions)
-    selected = []
-    total = 0
-    for mission in missions:
-        diff = mission['difficulty'][idx]
-        if total + diff <= target_difficulty:
-            selected.append((mission['id'], diff, mission['description']))
-            total += diff
-        if total == target_difficulty:
-            break
-    if total != target_difficulty:
-        return []  # No exact match found
-    return selected
+    best_result = []
+    best_distance = float('inf')
+    best_info = {}
+    
+    for attempt in range(max_attempts):
+        # Simple greedy random approach
+        shuffled_missions = missions.copy()
+        random.shuffle(shuffled_missions)
+        selected = []
+        total = 0
+        
+        for mission in shuffled_missions:
+            diff = mission['difficulty'][idx]
+            if total + diff <= target_difficulty:
+                selected.append((mission['id'], diff, mission['description']))
+                total += diff
+                
+                if total == target_difficulty:
+                    return selected, {
+                        'attempts': attempt + 1,
+                        'exactMatch': True,
+                        'distance': 0
+                    }
+        
+        # Track the best result so far (closest to target without exceeding)
+        distance = target_difficulty - total
+        if total > 0 and distance >= 0 and distance < best_distance:
+            best_distance = distance
+            best_result = selected.copy()
+            best_info = {
+                'attempts': attempt + 1,
+                'exactMatch': False,
+                'distance': distance,
+                'closeMatch': distance <= 2
+            }
+        
+        # If we got close to the target, we can return early
+        if total >= target_difficulty - 2 and total <= target_difficulty:
+            return selected, {
+                'attempts': attempt + 1,
+                'exactMatch': False,
+                'distance': distance,
+                'closeMatch': True
+            }
+    
+    # Return the best result we found, even if it's not perfect
+    return best_result, best_info
 
 def main():
     import argparse
@@ -147,21 +215,41 @@ def main():
     
     # Choose selection method
     if args.method == 'deck':
-        result = select_missions_deck_draw(missions, args.players, mission_target_difficulty)
+        result, info = select_missions_deck_draw(missions, args.players, mission_target_difficulty)
         method_name = "Official Deck Draw"
     else:
-        result = select_missions(missions, args.players, mission_target_difficulty)
+        result, info = select_missions(missions, args.players, mission_target_difficulty)
         method_name = "Greedy Selection"
     
     if not result:
-        print(f'No combination found for the given difficulty using {args.missions} missions with {method_name.lower()}.')
+        print(f'Unable to generate any missions for {args.players} players with difficulty {args.difficulty} using {args.missions} missions and {method_name.lower()}.')
+        print('Try: lowering the target difficulty, using a different mission set, or adjusting modifiers.')
     else:
         mission_type = args.missions.capitalize()
         mission_difficulty = sum(diff for _, diff, _ in result)
         total_difficulty = mission_difficulty + modifier_difficulty
         
-        print(f'{method_name}: Selected {mission_type} missions for {args.players} players')
+        # Prepare status message based on match quality
+        if info.get('exactMatch'):
+            match_type = '🎯 Exact match'
+        elif info.get('closeMatch') or (info.get('distance', 0) <= 2):
+            match_type = f'📍 Close match ({mission_difficulty}/{mission_target_difficulty})'
+        elif info.get('distance', 0) > 2:
+            match_type = f'⚠️ Best available ({mission_difficulty}/{mission_target_difficulty}, {info.get("distance", 0)} short)'
+        else:
+            match_type = ''
+        
+        print(f'{method_name}: Found {len(result)} mission{"s" if len(result) != 1 else ""} for {args.players} players using {mission_type} missions')
+        if info.get('attempts', 0) > 1:
+            print(f'  in {info["attempts"]} attempt{"s" if info["attempts"] != 1 else ""}')
+        print(f'{match_type}')
         print(f'(Mission Difficulty: {mission_difficulty}' + (f' + Modifier Difficulty: {modifier_difficulty} = Total: {total_difficulty})' if modifier_difficulty > 0 else ')'))
+        
+        # Add warning for significantly lower difficulty
+        if info.get('distance', 0) > 3:
+            print(f'\n⚠️ Note: Could not reach target difficulty {args.difficulty}. The best combination found was {info["distance"]} points lower.')
+            print('Try: lowering the target difficulty, using a different mission set, or adjusting modifiers.')
+        
         print()
         
         # Show modifiers first
