@@ -1,0 +1,868 @@
+{
+  "missions": [
+    {
+      "id": 1,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win more tricks than everyone else"
+    },
+    {
+      "id": 2,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 5
+      },
+      "description": "Win more tricks than everyone else together"
+    },
+    {
+      "id": 3,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 3
+      },
+      "description": "Win fewer tricks than everyone else"
+    },
+    {
+      "id": 4,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 3
+      },
+      "description": "Win more tricks than the captain (the captain can't take this mission)"
+    },
+    {
+      "id": 5,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Win fewer tricks than the captain (the captain can't take this mission)"
+    },
+    {
+      "id": 6,
+      "difficulty": {
+        "3_players": 4,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win the same number of tricks as the captain (the captain can't take this mission)"
+    },
+    {
+      "id": 7,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win a trick where all cards are of lower value than 7 without submarines"
+    },
+    {
+      "id": 8,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win a trick where all cards are of greater value than 5"
+    },
+    {
+      "id": 9,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win a trick with a 6."
+    },
+    {
+      "id": 10,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win a trick with a 5."
+    },
+    {
+      "id": 11,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 5
+      },
+      "description": "Win a trick with a 3."
+    },
+    {
+      "id": 12,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Win a 5 with a 7."
+    },
+    {
+      "id": 13,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 5
+      },
+      "description": "Win an 8 with a 4."
+    },
+    {
+      "id": 14,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win any 6 with a another 6."
+    },
+    {
+      "id": 15,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 5
+      },
+      "description": "Win a trick with a 2."
+    },
+    {
+      "id": 16,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 1
+      },
+      "description": "Win the pink 3"
+    },
+    {
+      "id": 17,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 1
+      },
+      "description": "Win the yellow 1"
+    },
+    {
+      "id": 18,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 1
+      },
+      "description": "Win the blue 4"
+    },
+    {
+      "id": 19,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 1
+      },
+      "description": "Win the green 6"
+    },
+    {
+      "id": 20,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 5
+      },
+      "description": "Win all four 3s."
+    },
+    {
+      "id": 21,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 5
+      },
+      "description": "Win at least three 5s."
+    },
+    {
+      "id": 22,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 5
+      },
+      "description": "Win at least three 9s."
+    },
+    {
+      "id": 23,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Win at least two 7s."
+    },
+    {
+      "id": 24,
+      "difficulty": {
+        "3_players": 4,
+        "4_players": 5,
+        "5_players": 6
+      },
+      "description": "Win all four 9s."
+    },
+    {
+      "id": 25,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 4
+      },
+      "description": "Win exactly three 6s"
+    },
+    {
+      "id": 26,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win exactly two 9s"
+    },
+    {
+      "id": 27,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win the blue 1,2 and 3"
+    },
+    {
+      "id": 28,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 3
+      },
+      "description": "Win the blue 6 and the yellow 7"
+    },
+    {
+      "id": 29,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 3
+      },
+      "description": "Win the pink 5 and yellow 6"
+    },
+    {
+      "id": 30,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 3
+      },
+      "description": "Win the green 5 and blue 8"
+    },
+    {
+      "id": 31,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 3
+      },
+      "description": "Win the blue 5 and pink 8"
+    },
+    {
+      "id": 32,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 3
+      },
+      "description": "Win the pink 9 and yellow 8"
+    },
+    {
+      "id": 33,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Win the pink 1 and green 7"
+    },
+    {
+      "id": 34,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win the yellow 9 and blue 7"
+    },
+    {
+      "id": 35,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 4
+      },
+      "description": "Win the green 3 and the yellow 4 and 5"
+    },
+    {
+      "id": 36,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 5
+      },
+      "description": "Win the green 2 in the last trick"
+    },
+    {
+      "id": 37,
+      "difficulty": {
+        "3_players": 4,
+        "4_players": 4,
+        "5_players": 4
+      },
+      "description": "Win exactly one pink and one green card"
+    },
+    {
+      "id": 38,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win at least seven yellow cards"
+    },
+    {
+      "id": 39,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win at least five pink cards"
+    },
+    {
+      "id": 40,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 4
+      },
+      "description": "Win exactly two green cards."
+    },
+    {
+      "id": 41,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 4
+      },
+      "description": "Win exactly two blue cards."
+    },
+    {
+      "id": 42,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win exactly one pink card."
+    },
+    {
+      "id": 43,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Win no pink cards."
+    },
+    {
+      "id": 44,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win at least one card of each colour (excluding submarines)"
+    },
+    {
+      "id": 45,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 5
+      },
+      "description": "Win all cards of at least one colour (excluding submarines)"
+    },
+    {
+      "id": 46,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 5,
+        "5_players": 6
+      },
+      "description": "Win a trick that has only even numbers (2,4,6,8)"
+    },
+    {
+      "id": 47,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 4,
+        "5_players": 5
+      },
+      "description": "Win a trick that has only numbers (1,3,5,7,9)"
+    },
+    {
+      "id": 48,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win a trick with a total value higher than 23/28/31 (3/4/5 players) without submarines"
+    },
+    {
+      "id": 49,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win a trick with a total value lower than 8/12/16 (3/4/5 players) without submarines"
+    },
+    {
+      "id": 50,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win a trick with a total value of 22 or 23"
+    },
+    {
+      "id": 51,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win exactly one submarine (deal new cards if someone has all submarines in hand)"
+    },
+    {
+      "id": 52,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win the 1 submarine and no other (deal new cards if someone has submarines no. 1 and 4 or 1,2,3 in hand)"
+    },
+    {
+      "id": 53,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win the 2 submarine and no other (deal new cards if someone has submarines no. 2 and 4 or 1,2,3 in hand)"
+    },
+    {
+      "id": 54,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 1
+      },
+      "description": "Win the 3 submarine"
+    },
+    {
+      "id": 55,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win exactly two submarines (deal new cards if someone has submarines no. 2,3,4 in hand)"
+    },
+    {
+      "id": 56,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 4
+      },
+      "description": "Win exactly three submarines (deal new cards if someone has all submarines in hand)"
+    },
+    {
+      "id": 57,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 1
+      },
+      "description": "Win no submarines"
+    },
+    {
+      "id": 58,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win the pink 7 with a submarine"
+    },
+    {
+      "id": 59,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win the green 9 with a submarine"
+    },
+    {
+      "id": 60,
+      "difficulty": {
+        "3_players": 4,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Don't open a trick with a pink, yellow or blue card"
+    },
+    {
+      "id": 61,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 1,
+        "5_players": 1
+      },
+      "description": "Don't open a trick with a pink or green card"
+    },
+    {
+      "id": 62,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Don't win any green cards"
+    },
+    {
+      "id": 63,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Don't win any yellow cards"
+    },
+    {
+      "id": 64,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Don't win any pink or blue cards"
+    },
+    {
+      "id": 65,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Don't win any yellow or green cards"
+    },
+    {
+      "id": 66,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 2
+      },
+      "description": "Don't win any 8s or 9s"
+    },
+    {
+      "id": 67,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 1
+      },
+      "description": "Don't win any 9s"
+    },
+    {
+      "id": 68,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Don't win any 5s"
+    },
+    {
+      "id": 69,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Don't win any 1s"
+    },
+    {
+      "id": 70,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Don't win any 1s, 2s or 3s"
+    },
+    {
+      "id": 71,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 2,
+        "5_players": 3
+      },
+      "description": "Don't win any of the first four tricks"
+    },
+    {
+      "id": 72,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Don't win any of the first three tricks"
+    },
+    {
+      "id": 73,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Don't win any of the first five tricks"
+    },
+    {
+      "id": 74,
+      "difficulty": {
+        "3_players": 4,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Don't win any tricks"
+    },
+    {
+      "id": 75,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Do not win two consecutive tricks."
+    },
+    {
+      "id": 76,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win the last trick"
+    },
+    {
+      "id": 77,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win the first three tricks"
+    },
+    {
+      "id": 78,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 2
+      },
+      "description": "Win the first two tricks"
+    },
+    {
+      "id": 79,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 1
+      },
+      "description": "Win the first trick"
+    },
+    {
+      "id": 80,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 4
+      },
+      "description": "Win the first and the last trick"
+    },
+    {
+      "id": 81,
+      "difficulty": {
+        "3_players": 4,
+        "4_players": 4,
+        "5_players": 4
+      },
+      "description": "I win only the last trick"
+    },
+    {
+      "id": 82,
+      "difficulty": {
+        "3_players": 4,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "I win only the first trick"
+    },
+    {
+      "id": 83,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Win exactly one trick"
+    },
+    {
+      "id": 84,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Win exactly two tricks"
+    },
+    {
+      "id": 85,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 1
+      },
+      "description": "Win two consecutive tricks"
+    },
+    {
+      "id": 86,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win three consecutive tricks"
+    },
+    {
+      "id": 87,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 5
+      },
+      "description": "Win exactly four tricks"
+    },
+    {
+      "id": 88,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win exactly three consecutive tricks."
+    },
+    {
+      "id": 89,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win exactly two consecutive tricks."
+    },
+    {
+      "id": 90,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "description": "Win X tricks (predict the exact number and show)"
+    },
+    {
+      "id": 91,
+      "difficulty": {
+        "3_players": 4,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win X tricks (predict the exact number but keep hidden)"
+    },
+    {
+      "id": 92,
+      "difficulty": {
+        "3_players": 4,
+        "4_players": 4,
+        "5_players": 4
+      },
+      "description": "Win the same amount of pink and yellow cards (more than 0)"
+    },
+    {
+      "id": 93,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win the same amount of green and yellow cards in a trick (more than 0)"
+    },
+    {
+      "id": 94,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win the same amount of pink and blue cards in a trick (more than 0)"
+    },
+    {
+      "id": 95,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 1
+      },
+      "description": "Win more yellow cards than blue cards (0 blue cards are allowed)"
+    },
+    {
+      "id": 96,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 1
+      },
+      "description": "Win more pink cards than green cards (0 green cards are allowed)"
+    }
+  ]
+}

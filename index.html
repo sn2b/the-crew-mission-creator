@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Crew Mission Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .control-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+        
+        .results {
+            padding: 30px;
+            min-height: 200px;
+        }
+        
+        .mission-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .mission-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .mission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .mission-id {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .mission-difficulty {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .mission-description {
+            color: #2c3e50;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            padding: 40px;
+        }
+        
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .controls, .results {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 The Crew Mission Generator</h1>
+            <p>Generate custom mission combinations for your space adventures</p>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="players">Number of Players:</label>
+                <select id="players">
+                    <option value="3">3 Players</option>
+                    <option value="4" selected>4 Players</option>
+                    <option value="5">5 Players</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="difficulty">Target Difficulty:</label>
+                <input type="number" id="difficulty" min="1" max="50" value="10" placeholder="Enter target difficulty">
+            </div>
+            
+            <div class="button-group">
+                <button class="btn-primary" onclick="generateMissions()">🎯 Generate Missions</button>
+                <button class="btn-secondary" onclick="clearResults()">🔄 Clear Results</button>
+            </div>
+        </div>
+        
+        <div class="results" id="results">
+            <div class="no-results">
+                🎲 Select your parameters and click "Generate Missions" to get started!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let missionsData = null;
+        
+        // Load missions data when page loads
+        async function loadMissions() {
+            try {
+                const response = await fetch('missions/classic.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load missions data');
+                }
+                missionsData = await response.json();
+                console.log('Missions data loaded:', missionsData.missions.length, 'missions');
+            } catch (error) {
+                console.error('Error loading missions:', error);
+                document.getElementById('results').innerHTML = `
+                    <div class="error">
+                        ❌ Error loading missions data. Please make sure the missions/classic.json file is available.
+                    </div>
+                `;
+            }
+        }
+        
+        // Shuffle array function
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+        
+        // Select missions that sum to target difficulty
+        function selectMissions(missions, numPlayers, targetDifficulty) {
+            const playerKey = `${numPlayers}_players`;
+            const shuffledMissions = shuffleArray(missions);
+            const selected = [];
+            let total = 0;
+            
+            for (const mission of shuffledMissions) {
+                const difficulty = mission.difficulty[playerKey];
+                if (total + difficulty <= targetDifficulty) {
+                    selected.push({
+                        id: mission.id,
+                        difficulty: difficulty,
+                        description: mission.description
+                    });
+                    total += difficulty;
+                    
+                    if (total === targetDifficulty) {
+                        break;
+                    }
+                }
+            }
+            
+            return total === targetDifficulty ? selected : null;
+        }
+        
+        // Generate missions based on user input
+        function generateMissions() {
+            if (!missionsData) {
+                document.getElementById('results').innerHTML = `
+                    <div class="error">
+                        ❌ Missions data not loaded yet. Please wait and try again.
+                    </div>
+                `;
+                return;
+            }
+            
+            const players = parseInt(document.getElementById('players').value);
+            const difficulty = parseInt(document.getElementById('difficulty').value);
+            
+            if (!difficulty || difficulty < 1) {
+                document.getElementById('results').innerHTML = `
+                    <div class="error">
+                        ❌ Please enter a valid target difficulty (minimum 1).
+                    </div>
+                `;
+                return;
+            }
+            
+            document.getElementById('results').innerHTML = `
+                <div class="loading">
+                    🎲 Generating missions...
+                </div>
+            `;
+            
+            // Add a small delay to show loading state
+            setTimeout(() => {
+                const selectedMissions = selectMissions(missionsData.missions, players, difficulty);
+                
+                if (!selectedMissions || selectedMissions.length === 0) {
+                    document.getElementById('results').innerHTML = `
+                        <div class="no-results">
+                            😔 No combination found for ${players} players with difficulty ${difficulty}.
+                            <br><br>
+                            Try adjusting the target difficulty or try again for a different random combination.
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const totalDifficulty = selectedMissions.reduce((sum, mission) => sum + mission.difficulty, 0);
+                
+                let html = `
+                    <div class="stats">
+                        🎯 Found ${selectedMissions.length} mission${selectedMissions.length !== 1 ? 's' : ''} for ${players} players 
+                        (Total Difficulty: ${totalDifficulty})
+                    </div>
+                `;
+                
+                selectedMissions.forEach((mission, index) => {
+                    html += `
+                        <div class="mission-card">
+                            <div class="mission-header">
+                                <span class="mission-id">Mission ${mission.id}</span>
+                                <span class="mission-difficulty">Difficulty: ${mission.difficulty}</span>
+                            </div>
+                            <div class="mission-description">
+                                ${mission.description}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('results').innerHTML = html;
+            }, 300);
+        }
+        
+        // Clear results
+        function clearResults() {
+            document.getElementById('results').innerHTML = `
+                <div class="no-results">
+                    🎲 Select your parameters and click "Generate Missions" to get started!
+                </div>
+            `;
+        }
+        
+        // Allow Enter key to trigger generation
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('difficulty').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    generateMissions();
+                }
+            });
+            
+            // Load missions data
+            loadMissions();
+        });
+    </script>
+</body>
+</html>
