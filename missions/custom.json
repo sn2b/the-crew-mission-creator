@@ -70,7 +70,7 @@
         "4_players": 3,
         "5_players": 3
       },
-      "description": "Win cards that spell out a color when sorted by value (e.g., Blue 1,2,3,4)"
+      "description": "Win 4 consecutive numbered cards of the same color (e.g., Blue 1, 2, 3, 4)"
     },
     {
       "id": 109,
