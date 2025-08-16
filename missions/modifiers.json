@@ -1,0 +1,64 @@
+{
+  "modifiers": [
+    {
+      "id": "currents",
+      "name": "Currents",
+      "symbol": "🌊",
+      "description": "Communication is disrupted. You cannot place sonar tokens on cards - turn them to red side instead. Others must deduce your meaning.",
+      "difficulty_modifier": {
+        "3_players": 1,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "rules_text": "When communicating, place cards as normal but turn sonar token to red side. No direct indication of card meaning allowed."
+    },
+    {
+      "id": "rapture_of_the_deep",
+      "name": "Rapture of the Deep",
+      "symbol": "🌊🌊",
+      "description": "Communication is limited. Place two fewer sonar tokens in the middle than there are crew members. Use tokens to communicate without discussion.",
+      "difficulty_modifier": {
+        "3_players": 1,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "rules_text": "Use sonar tokens for communication without discussion. No personal tokens; all tokens shared."
+    },
+    {
+      "id": "unfamiliar_terrain",
+      "name": "Unfamiliar Terrain",
+      "symbol": "🗺️",
+      "description": "Before dealing cards, draw a color card to determine communication type: 1-3 normal, 4-6 currents, 7-9 rapture of the deep.",
+      "difficulty_modifier": {
+        "3_players": 1,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "rules_text": "Draw a color card before dealing. Its value determines communication type for the mission."
+    },
+    {
+      "id": "real_time_missions",
+      "name": "Real-Time Missions",
+      "symbol": "⏱️",
+      "description": "Play missions in real time. Set a timer based on difficulty level. If time runs out, mission fails.",
+      "difficulty_modifier": {
+        "3_players": 1,
+        "4_players": 2,
+        "5_players": 2
+      },
+      "rules_text": "Set a timer after task allocation. If time runs out before completion, mission fails."
+    },
+    {
+      "id": "free_selection_of_tasks",
+      "name": "Free Selection of Tasks",
+      "symbol": "🆓",
+      "description": "Discuss task allocation freely without revealing card details. One crew member can take all tasks.",
+      "difficulty_modifier": {
+        "3_players": -1,
+        "4_players": -2,
+        "5_players": -2
+      },
+      "rules_text": "Crew members can discuss and allocate tasks without revealing their cards. One can take all tasks."
+    }
+  ]
+}

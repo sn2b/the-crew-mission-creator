@@ -118,6 +118,59 @@
             min-height: 200px;
         }
         
+        .modifier-card {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            border: 2px solid #a93226;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .modifier-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .modifier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .modifier-symbol {
+            font-size: 1.5em;
+        }
+        
+        .modifier-difficulty {
+            background: rgba(255,255,255,0.2);
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .modifier-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .modifier-description {
+            font-size: 14px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+        
+        .modifier-rules {
+            font-size: 12px;
+            font-style: italic;
+            opacity: 0.8;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 8px;
+        }
+        
         .mission-card {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border: 2px solid #dee2e6;
@@ -226,6 +279,14 @@
         
         <div class="controls">
             <div class="control-group">
+                <label for="method">Selection Method:</label>
+                <select id="method">
+                    <option value="deck" selected>📚 Deck Draw (Official Rules)</option>
+                    <option value="greedy">🎲 Greedy Selection (Legacy)</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
                 <label for="missionSet">Mission Set:</label>
                 <select id="missionSet">
                     <option value="classic" selected>Classic Missions</option>
@@ -240,6 +301,15 @@
                     <option value="3">3 Players</option>
                     <option value="4" selected>4 Players</option>
                     <option value="5">5 Players</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="useModifiers">Mission Modifiers:</label>
+                <select id="useModifiers">
+                    <option value="none" selected>None</option>
+                    <option value="random">Random Modifier</option>
+                    <option value="multiple">Multiple Modifiers</option>
                 </select>
             </div>
             
@@ -264,6 +334,7 @@
     <script>
         let classicMissions = null;
         let customMissions = null;
+        let modifiersData = null;
         
         // Load missions data when page loads
         async function loadMissions() {
@@ -282,17 +353,71 @@
                 }
                 customMissions = await customResponse.json();
                 
-                console.log('Missions data loaded:', 
+                // Load modifiers
+                const modifiersResponse = await fetch('missions/modifiers.json');
+                if (!modifiersResponse.ok) {
+                    throw new Error('Failed to load modifiers data');
+                }
+                modifiersData = await modifiersResponse.json();
+                
+                console.log('Data loaded:', 
                     classicMissions.missions.length, 'classic missions,',
-                    customMissions.missions.length, 'custom missions');
+                    customMissions.missions.length, 'custom missions,',
+                    modifiersData.modifiers.length, 'modifiers');
             } catch (error) {
-                console.error('Error loading missions:', error);
+                console.error('Error loading data:', error);
                 document.getElementById('results').innerHTML = `
                     <div class="error">
-                        ❌ Error loading missions data. Please make sure the mission files are available.
+                        ❌ Error loading game data. Please make sure all files are available.
                     </div>
                 `;
             }
+        }
+        
+        // Select random modifiers
+        function selectModifiers(numPlayers, modifierSetting) {
+            if (!modifiersData || modifierSetting === 'none') {
+                return [];
+            }
+            
+            const availableModifiers = modifiersData.modifiers;
+            let selectedModifiers = [];
+            
+            if (modifierSetting === 'random') {
+                // Select one random modifier
+                const randomIndex = Math.floor(Math.random() * availableModifiers.length);
+                selectedModifiers = [availableModifiers[randomIndex]];
+            } else if (modifierSetting === 'multiple') {
+                // Select 1-3 random modifiers
+                const numModifiers = Math.floor(Math.random() * 3) + 1;
+                const shuffled = shuffleArray(availableModifiers);
+                selectedModifiers = shuffled.slice(0, numModifiers);
+            }
+            
+            return selectedModifiers;
+        }
+        
+        // Calculate total difficulty including modifiers
+        function calculateTotalDifficulty(baseDifficulty, modifiers, numPlayers) {
+            let total = baseDifficulty;
+            const playerKey = `${numPlayers}_players`;
+            
+            for (const modifier of modifiers) {
+                total += modifier.difficulty_modifier[playerKey];
+            }
+            
+            return total;
+        }
+            const missionSet = document.getElementById('missionSet').value;
+            
+            switch (missionSet) {
+                case 'classic':
+                    return classicMissions ? classicMissions.missions : [];
+                case 'custom':
+                    return customMissions ? customMissions.missions : [];
+                case 'mixed':
+                    if (!classicMissions || !customMissions) return [];
+                    return [...classicMissions.missions, ...customMissions.missions];
         }
         
         // Get selected mission set
@@ -322,8 +447,47 @@
             return shuffled;
         }
         
-        // Select missions that sum to target difficulty
-        function selectMissions(missions, numPlayers, targetDifficulty) {
+        // Select missions using deck draw method (official rules)
+        function selectMissionsDeckDraw(missions, numPlayers, targetDifficulty) {
+            const playerKey = `${numPlayers}_players`;
+            const shuffledMissions = shuffleArray(missions);
+            const selected = [];
+            const skipped = [];
+            let total = 0;
+            let cardsDrawn = 0;
+            
+            for (const mission of shuffledMissions) {
+                cardsDrawn++;
+                const difficulty = mission.difficulty[playerKey];
+                
+                if (total + difficulty <= targetDifficulty) {
+                    // We can take this card
+                    selected.push({
+                        id: mission.id,
+                        difficulty: difficulty,
+                        description: mission.description
+                    });
+                    total += difficulty;
+                    
+                    if (total === targetDifficulty) {
+                        // We've reached the exact target
+                        break;
+                    }
+                } else {
+                    // Skip this card as it would exceed the target
+                    skipped.push({
+                        id: mission.id,
+                        difficulty: difficulty,
+                        description: mission.description
+                    });
+                }
+            }
+            
+            return total === targetDifficulty ? { selected, skipped, cardsDrawn } : null;
+        }
+        
+        // Select missions using greedy method (legacy)
+        function selectMissionsGreedy(missions, numPlayers, targetDifficulty) {
             const playerKey = `${numPlayers}_players`;
             const shuffledMissions = shuffleArray(missions);
             const selected = [];
@@ -345,7 +509,7 @@
                 }
             }
             
-            return total === targetDifficulty ? selected : null;
+            return total === targetDifficulty ? { selected, skipped: [], cardsDrawn: selected.length } : null;
         }
         
         // Generate missions based on user input
@@ -363,7 +527,10 @@
             
             const players = parseInt(document.getElementById('players').value);
             const difficulty = parseInt(document.getElementById('difficulty').value);
+            const method = document.getElementById('method').value;
+            const modifierSetting = document.getElementById('useModifiers').value;
             const missionSetName = document.getElementById('missionSet').options[document.getElementById('missionSet').selectedIndex].text;
+            const methodName = document.getElementById('method').options[document.getElementById('method').selectedIndex].text;
             
             if (!difficulty || difficulty < 1) {
                 document.getElementById('results').innerHTML = `
@@ -374,20 +541,46 @@
                 return;
             }
             
+            // Select modifiers first
+            const selectedModifiers = selectModifiers(players, modifierSetting);
+            let modifierDifficulty = 0;
+            const playerKey = `${players}_players`;
+            
+            for (const modifier of selectedModifiers) {
+                modifierDifficulty += modifier.difficulty_modifier[playerKey];
+            }
+            
+            // Adjust target difficulty for mission selection
+            const missionTargetDifficulty = difficulty - modifierDifficulty;
+            
+            if (missionTargetDifficulty <= 0) {
+                document.getElementById('results').innerHTML = `
+                    <div class="error">
+                        ❌ Target difficulty too low for selected modifiers. Modifiers add ${modifierDifficulty} difficulty.
+                    </div>
+                `;
+                return;
+            }
+            
             document.getElementById('results').innerHTML = `
                 <div class="loading">
-                    🎲 Generating missions from ${missionSetName}...
+                    🎲 Generating missions using ${methodName} from ${missionSetName}...
                 </div>
             `;
             
             // Add a small delay to show loading state
             setTimeout(() => {
-                const result = selectMissions(selectedMissions, players, difficulty);
+                let result;
+                if (method === 'deck') {
+                    result = selectMissionsDeckDraw(selectedMissions, players, missionTargetDifficulty);
+                } else {
+                    result = selectMissionsGreedy(selectedMissions, players, missionTargetDifficulty);
+                }
                 
-                if (!result || result.length === 0) {
+                if (!result || result.selected.length === 0) {
                     document.getElementById('results').innerHTML = `
                         <div class="no-results">
-                            😔 No combination found for ${players} players with difficulty ${difficulty} using ${missionSetName}.
+                            😔 No combination found for ${players} players with difficulty ${difficulty} using ${methodName} and ${missionSetName}.
                             <br><br>
                             Try adjusting the target difficulty or try again for a different random combination.
                         </div>
@@ -395,19 +588,53 @@
                     return;
                 }
                 
-                const totalDifficulty = result.reduce((sum, mission) => sum + mission.difficulty, 0);
+                const missionDifficulty = result.selected.reduce((sum, mission) => sum + mission.difficulty, 0);
+                const totalDifficulty = missionDifficulty + modifierDifficulty;
+                const methodIcon = method === 'deck' ? '📚' : '🎲';
                 
                 let html = `
                     <div class="stats">
-                        🎯 Found ${result.length} mission${result.length !== 1 ? 's' : ''} for ${players} players using ${missionSetName}
-                        <br>(Total Difficulty: ${totalDifficulty})
-                    </div>
+                        ${methodIcon} ${methodName}: Found ${result.selected.length} mission${result.selected.length !== 1 ? 's' : ''} for ${players} players using ${missionSetName}
+                        <br>(Mission Difficulty: ${missionDifficulty}${modifierDifficulty > 0 ? ` + Modifier Difficulty: ${modifierDifficulty} = Total: ${totalDifficulty}` : ''})
                 `;
                 
-                result.forEach((mission, index) => {
+                if (method === 'deck' && result.skipped.length > 0) {
+                    html += `<br>📤 Cards drawn from deck: ${result.cardsDrawn} | Skipped: ${result.skipped.length}`;
+                }
+                
+                html += `</div>`;
+                
+                // Show modifiers first if any
+                selectedModifiers.forEach((modifier) => {
+                    let modifierDescription = modifier.description;
+                    let modifierRules = modifier.rules_text;
+                    
+                    // Add timer suggestion for Real-Time Missions
+                    if (modifier.id === 'real_time_missions') {
+                        const suggestedTime = Math.max(1, totalDifficulty); // 1 minute per difficulty point, minimum 1 minute
+                        modifierDescription += ` Suggested timer: ${suggestedTime} minute${suggestedTime !== 1 ? 's' : ''}.`;
+                        modifierRules = `Set a ${suggestedTime}-minute timer after task allocation. ${modifierRules}`;
+                    }
+                    
+                    html += `
+                        <div class="modifier-card">
+                            <div class="modifier-header">
+                                <div>
+                                    <span class="modifier-symbol">${modifier.symbol}</span>
+                                    <span class="modifier-name">${modifier.name}</span>
+                                </div>
+                                <span class="modifier-difficulty">+${modifier.difficulty_modifier[playerKey]}</span>
+                            </div>
+                            <div class="modifier-description">${modifierDescription}</div>
+                            <div class="modifier-rules">Rules: ${modifierRules}</div>
+                        </div>
+                    `;
+                });
+                
+                // Show missions
+                result.selected.forEach((mission, index) => {
                     const isCustomMission = mission.id >= 101;
                     const missionTypeIcon = isCustomMission ? "⭐" : "🎯";
-                    const missionTypeLabel = isCustomMission ? "Custom" : "Classic";
                     
                     html += `
                         <div class="mission-card">
@@ -421,6 +648,31 @@
                         </div>
                     `;
                 });
+                
+                // Show skipped cards if using deck draw method and there are any
+                if (method === 'deck' && result.skipped.length > 0) {
+                    html += `
+                        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #95a5a6;">
+                            <h4 style="margin-bottom: 10px; color: #7f8c8d;">📤 Skipped Cards (would exceed target):</h4>
+                            <div style="font-size: 14px; color: #6c757d;">
+                    `;
+                    
+                    result.skipped.slice(0, 5).forEach(mission => {
+                        const isCustomMission = mission.id >= 101;
+                        const missionTypeIcon = isCustomMission ? "⭐" : "🎯";
+                        html += `${missionTypeIcon} Mission ${mission.id} (${mission.difficulty}), `;
+                    });
+                    
+                    html = html.slice(0, -2); // Remove last comma
+                    if (result.skipped.length > 5) {
+                        html += `... and ${result.skipped.length - 5} more`;
+                    }
+                    
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                }
                 
                 document.getElementById('results').innerHTML = html;
             }, 300);
