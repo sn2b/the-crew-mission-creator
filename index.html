@@ -22,7 +22,53 @@
             max-width: 800px;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
+                     cons                const missionDifficulty = result.selected.reduce((sum, mission) => sum + mission.difficulty, 0);
+                const totalDifficulty = missionDifficulty + modifierDifficulty;
+                const methodIcon = method === 'deck' ? '📚' : '🎲';
+                const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(1);
+                
+                // Prepare status message based on match quality
+                let statusMessage = `Found ${result.selected.length} mission${result.selected.length !== 1 ? 's' : ''} for ${players} players using ${missionSetName}`;
+                let matchType = '';
+                
+                if (result.exactMatch) {
+                    matchType = '🎯 Exact match';
+                } else if (result.closeMatch || (result.distance && result.distance <= 2)) {
+                    matchType = `📍 Close match (${missionDifficulty}/${missionTargetDifficulty})`;
+                } else if (result.distance && result.distance > 2) {
+                    matchType = `⚠️ Best available (${missionDifficulty}/${missionTargetDifficulty}, ${result.distance} short)`;
+                }
+                
+                if (result.attempts && result.attempts > 1) {
+                    statusMessage += ` in ${result.attempts} attempt${result.attempts !== 1 ? 's' : ''}`;
+                }
+                
+                let html = `
+                    <div class="stats">
+                        ${methodIcon} ${methodName}: ${statusMessage}
+                        <br>${matchType}
+                        <br>(Mission Difficulty: ${missionDifficulty}${modifierDifficulty > 0 ? ` + Modifier Difficulty: ${modifierDifficulty} = Total: ${totalDifficulty}` : ''})
+                        <br><small>Generated in ${elapsedTime}s</small>nDifficulty = result.selected.reduce((sum, mission) => sum + mission.difficulty, 0);
+                const totalDifficulty = missionDifficulty + modifierDifficulty;
+                const methodIcon = method === 'deck' ? '📚' : '🎲';
+                const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(1);
+                
+                // Prepare status message
+                let statusMessage = `Found ${result.selected.length} mission${result.selected.length !== 1 ? 's' : ''} for ${players} players using ${missionSetName}`;
+                
+                if (result.closeMatch) {
+                    statusMessage += ` (close match: ${missionDifficulty}/${missionTargetDifficulty})`;
+                }
+                
+                if (result.attempts && result.attempts > 1) {
+                    statusMessage += ` in ${result.attempts} attempt${result.attempts !== 1 ? 's' : ''}`;
+                }
+                
+                let html = `
+                    <div class="stats">
+                        ${methodIcon} ${methodName}: ${statusMessage}
+                        <br>(Mission Difficulty: ${missionDifficulty}${modifierDifficulty > 0 ? ` + Modifier Difficulty: ${modifierDifficulty} = Total: ${totalDifficulty}` : ''})
+                        <br><small>Generated in ${elapsedTime}s</small>order-radius: 15px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
         }
@@ -408,17 +454,6 @@
             
             return total;
         }
-            const missionSet = document.getElementById('missionSet').value;
-            
-            switch (missionSet) {
-                case 'classic':
-                    return classicMissions ? classicMissions.missions : [];
-                case 'custom':
-                    return customMissions ? customMissions.missions : [];
-                case 'mixed':
-                    if (!classicMissions || !customMissions) return [];
-                    return [...classicMissions.missions, ...customMissions.missions];
-        }
         
         // Get selected mission set
         function getSelectedMissions() {
@@ -448,68 +483,118 @@
         }
         
         // Select missions using deck draw method (official rules)
-        function selectMissionsDeckDraw(missions, numPlayers, targetDifficulty) {
+        function selectMissionsDeckDraw(missions, numPlayers, targetDifficulty, maxAttempts = 100) {
             const playerKey = `${numPlayers}_players`;
-            const shuffledMissions = shuffleArray(missions);
-            const selected = [];
-            const skipped = [];
-            let total = 0;
-            let cardsDrawn = 0;
+            let bestResult = null;
+            let bestDistance = Infinity;
             
-            for (const mission of shuffledMissions) {
-                cardsDrawn++;
-                const difficulty = mission.difficulty[playerKey];
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                const shuffledMissions = shuffleArray(missions);
+                const selected = [];
+                const skipped = [];
+                let total = 0;
+                let cardsDrawn = 0;
                 
-                if (total + difficulty <= targetDifficulty) {
-                    // We can take this card
-                    selected.push({
-                        id: mission.id,
-                        difficulty: difficulty,
-                        description: mission.description
-                    });
-                    total += difficulty;
+                for (const mission of shuffledMissions) {
+                    cardsDrawn++;
+                    const difficulty = mission.difficulty[playerKey];
                     
-                    if (total === targetDifficulty) {
-                        // We've reached the exact target
-                        break;
+                    if (total + difficulty <= targetDifficulty) {
+                        // We can take this card
+                        selected.push({
+                            id: mission.id,
+                            difficulty: difficulty,
+                            description: mission.description
+                        });
+                        total += difficulty;
+                        
+                        if (total === targetDifficulty) {
+                            // We've reached the exact target
+                            return { selected, skipped, cardsDrawn, attempts: attempt + 1, exactMatch: true };
+                        }
+                    } else {
+                        // Skip this card as it would exceed the target
+                        skipped.push({
+                            id: mission.id,
+                            difficulty: difficulty,
+                            description: mission.description
+                        });
                     }
-                } else {
-                    // Skip this card as it would exceed the target
-                    skipped.push({
-                        id: mission.id,
-                        difficulty: difficulty,
-                        description: mission.description
-                    });
+                }
+                
+                // Track the best result so far (closest to target without exceeding)
+                const distance = targetDifficulty - total;
+                if (total > 0 && distance >= 0 && distance < bestDistance) {
+                    bestDistance = distance;
+                    bestResult = { 
+                        selected: [...selected], 
+                        skipped: [...skipped], 
+                        cardsDrawn, 
+                        attempts: attempt + 1,
+                        closeMatch: distance > 0,
+                        distance: distance
+                    };
+                }
+                
+                // If we got very close (within 1-2 of target), we can return early
+                if (total >= targetDifficulty - 2 && total <= targetDifficulty) {
+                    return { selected, skipped, cardsDrawn, attempts: attempt + 1, closeMatch: distance > 0, distance: distance };
                 }
             }
             
-            return total === targetDifficulty ? { selected, skipped, cardsDrawn } : null;
+            // Return the best result we found, even if it's not perfect
+            return bestResult;
         }
         
         // Select missions using greedy method (legacy)
-        function selectMissionsGreedy(missions, numPlayers, targetDifficulty) {
+        function selectMissionsGreedy(missions, numPlayers, targetDifficulty, maxAttempts = 50) {
             const playerKey = `${numPlayers}_players`;
-            const shuffledMissions = shuffleArray(missions);
-            const selected = [];
-            let total = 0;
+            let bestResult = null;
+            let bestDistance = Infinity;
             
-            for (const mission of shuffledMissions) {
-                const difficulty = mission.difficulty[playerKey];
-                if (total + difficulty <= targetDifficulty) {
-                    selected.push({
-                        id: mission.id,
-                        difficulty: difficulty,
-                        description: mission.description
-                    });
-                    total += difficulty;
-                    
-                    if (total === targetDifficulty) {
-                        break;
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                const shuffledMissions = shuffleArray(missions);
+                const selected = [];
+                let total = 0;
+                
+                for (const mission of shuffledMissions) {
+                    const difficulty = mission.difficulty[playerKey];
+                    if (total + difficulty <= targetDifficulty) {
+                        selected.push({
+                            id: mission.id,
+                            difficulty: difficulty,
+                            description: mission.description
+                        });
+                        total += difficulty;
+                        
+                        if (total === targetDifficulty) {
+                            return { selected, skipped: [], cardsDrawn: selected.length, attempts: attempt + 1, exactMatch: true };
+                        }
                     }
+                }
+                
+                // Track the best result so far (closest to target without exceeding)
+                const distance = targetDifficulty - total;
+                if (total > 0 && distance >= 0 && distance < bestDistance) {
+                    bestDistance = distance;
+                    bestResult = { 
+                        selected: [...selected], 
+                        skipped: [], 
+                        cardsDrawn: selected.length, 
+                        attempts: attempt + 1,
+                        closeMatch: distance > 0,
+                        distance: distance
+                    };
+                }
+                
+                // If we got close to the target, we can return early
+                if (total >= targetDifficulty - 2 && total <= targetDifficulty) {
+                    return { selected, skipped: [], cardsDrawn: selected.length, attempts: attempt + 1, closeMatch: distance > 0, distance: distance };
                 }
             }
             
-            return total === targetDifficulty ? { selected, skipped: [], cardsDrawn: selected.length } : null;
+            // Return the best result we found, even if it's not perfect
+            return bestResult;
         }
         
         // Generate missions based on user input
@@ -571,21 +656,68 @@
                 </div>
             `;
             
+            // Set up timeout handling
+            const startTime = Date.now();
+            const timeoutMs = 10000; // 10 second timeout
+            
             // Add a small delay to show loading state
             setTimeout(() => {
                 let result;
-                if (method === 'deck') {
-                    result = selectMissionsDeckDraw(selectedMissions, players, missionTargetDifficulty);
-                } else {
-                    result = selectMissionsGreedy(selectedMissions, players, missionTargetDifficulty);
+                let timeoutId;
+                let hasTimedOut = false;
+                
+                // Set up timeout
+                timeoutId = setTimeout(() => {
+                    hasTimedOut = true;
+                    document.getElementById('results').innerHTML = `
+                        <div class="error">
+                            ⏰ Mission generation timed out after 10 seconds.
+                            <br><br>
+                            This might happen with very specific difficulty targets. Try:
+                            <br>• Using a different target difficulty
+                            <br>• Switching between Deck Draw and Greedy Selection
+                            <br>• Using a different mission set (Classic/Custom/Mixed)
+                        </div>
+                    `;
+                }, timeoutMs);
+                
+                try {
+                    if (method === 'deck') {
+                        result = selectMissionsDeckDraw(selectedMissions, players, missionTargetDifficulty);
+                    } else {
+                        result = selectMissionsGreedy(selectedMissions, players, missionTargetDifficulty);
+                    }
+                    
+                    // Clear timeout if we got a result
+                    if (timeoutId) clearTimeout(timeoutId);
+                    
+                    if (hasTimedOut) return; // Don't process if we already timed out
+                    
+                } catch (error) {
+                    clearTimeout(timeoutId);
+                    console.error('Mission generation error:', error);
+                    document.getElementById('results').innerHTML = `
+                        <div class="error">
+                            ❌ An error occurred during mission generation: ${error.message}
+                            <br><br>
+                            Please try again or adjust your parameters.
+                        </div>
+                    `;
+                    return;
                 }
                 
                 if (!result || result.selected.length === 0) {
+                    const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(1);
                     document.getElementById('results').innerHTML = `
-                        <div class="no-results">
-                            😔 No combination found for ${players} players with difficulty ${difficulty} using ${methodName} and ${missionSetName}.
+                        <div class="error">
+                            😔 Unable to generate any missions for ${players} players with difficulty ${difficulty} using ${methodName} and ${missionSetName}.
                             <br><br>
-                            Try adjusting the target difficulty or try again for a different random combination.
+                            <small>Searched for ${elapsedTime} seconds</small>
+                            <br><br>
+                            This might happen if:
+                            <br>• Target difficulty is too low (try increasing it)
+                            <br>• Mission set doesn't have suitable combinations
+                            <br>• Modifiers make the target impossible to reach
                         </div>
                     `;
                     return;
@@ -606,6 +738,18 @@
                 }
                 
                 html += `</div>`;
+                
+                // Add a warning if we had to settle for much lower difficulty
+                if (result.distance && result.distance > 3) {
+                    html += `
+                        <div style="margin-bottom: 15px; padding: 15px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; color: #856404;">
+                            ⚠️ <strong>Note:</strong> Could not reach target difficulty ${difficulty}. 
+                            The best combination found was ${result.distance} points lower.
+                            <br><br>
+                            <small>Try: lowering the target difficulty, using a different mission set, or adjusting modifiers.</small>
+                        </div>
+                    `;
+                }
                 
                 // Show modifiers first if any
                 if (selectedModifiers && selectedModifiers.length > 0) {
