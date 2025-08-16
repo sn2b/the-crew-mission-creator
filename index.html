@@ -546,8 +546,11 @@
             let modifierDifficulty = 0;
             const playerKey = `${players}_players`;
             
-            for (const modifier of selectedModifiers) {
-                modifierDifficulty += modifier.difficulty_modifier[playerKey];
+            // Calculate modifier difficulty only if modifiers exist
+            if (selectedModifiers && selectedModifiers.length > 0) {
+                for (const modifier of selectedModifiers) {
+                    modifierDifficulty += modifier.difficulty_modifier[playerKey];
+                }
             }
             
             // Adjust target difficulty for mission selection
@@ -605,31 +608,33 @@
                 html += `</div>`;
                 
                 // Show modifiers first if any
-                selectedModifiers.forEach((modifier) => {
-                    let modifierDescription = modifier.description;
-                    let modifierRules = modifier.rules_text;
-                    
-                    // Add timer suggestion for Real-Time Missions
-                    if (modifier.id === 'real_time_missions') {
-                        const suggestedTime = Math.max(1, totalDifficulty); // 1 minute per difficulty point, minimum 1 minute
-                        modifierDescription += ` Suggested timer: ${suggestedTime} minute${suggestedTime !== 1 ? 's' : ''}.`;
-                        modifierRules = `Set a ${suggestedTime}-minute timer after task allocation. ${modifierRules}`;
-                    }
-                    
-                    html += `
-                        <div class="modifier-card">
-                            <div class="modifier-header">
-                                <div>
-                                    <span class="modifier-symbol">${modifier.symbol}</span>
-                                    <span class="modifier-name">${modifier.name}</span>
+                if (selectedModifiers && selectedModifiers.length > 0) {
+                    selectedModifiers.forEach((modifier) => {
+                        let modifierDescription = modifier.description;
+                        let modifierRules = modifier.rules_text;
+                        
+                        // Add timer suggestion for Real-Time Missions
+                        if (modifier.id === 'real_time_missions') {
+                            const suggestedTime = Math.max(1, totalDifficulty); // 1 minute per difficulty point, minimum 1 minute
+                            modifierDescription += ` Suggested timer: ${suggestedTime} minute${suggestedTime !== 1 ? 's' : ''}.`;
+                            modifierRules = `Set a ${suggestedTime}-minute timer after task allocation. ${modifierRules}`;
+                        }
+                        
+                        html += `
+                            <div class="modifier-card">
+                                <div class="modifier-header">
+                                    <div>
+                                        <span class="modifier-symbol">${modifier.symbol}</span>
+                                        <span class="modifier-name">${modifier.name}</span>
+                                    </div>
+                                    <span class="modifier-difficulty">+${modifier.difficulty_modifier[playerKey]}</span>
                                 </div>
-                                <span class="modifier-difficulty">+${modifier.difficulty_modifier[playerKey]}</span>
+                                <div class="modifier-description">${modifierDescription}</div>
+                                <div class="modifier-rules">Rules: ${modifierRules}</div>
                             </div>
-                            <div class="modifier-description">${modifierDescription}</div>
-                            <div class="modifier-rules">Rules: ${modifierRules}</div>
-                        </div>
-                    `;
-                });
+                        `;
+                    });
+                }
                 
                 // Show missions
                 result.selected.forEach((mission, index) => {
