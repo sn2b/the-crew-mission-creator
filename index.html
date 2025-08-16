@@ -226,6 +226,15 @@
         
         <div class="controls">
             <div class="control-group">
+                <label for="missionSet">Mission Set:</label>
+                <select id="missionSet">
+                    <option value="classic" selected>Classic Missions</option>
+                    <option value="custom">Custom Missions</option>
+                    <option value="mixed">Mixed (Classic + Custom)</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
                 <label for="players">Number of Players:</label>
                 <select id="players">
                     <option value="3">3 Players</option>
@@ -253,24 +262,53 @@
     </div>
 
     <script>
-        let missionsData = null;
+        let classicMissions = null;
+        let customMissions = null;
         
         // Load missions data when page loads
         async function loadMissions() {
             try {
-                const response = await fetch('missions/classic.json');
-                if (!response.ok) {
-                    throw new Error('Failed to load missions data');
+                // Load classic missions
+                const classicResponse = await fetch('missions/classic.json');
+                if (!classicResponse.ok) {
+                    throw new Error('Failed to load classic missions data');
                 }
-                missionsData = await response.json();
-                console.log('Missions data loaded:', missionsData.missions.length, 'missions');
+                classicMissions = await classicResponse.json();
+                
+                // Load custom missions
+                const customResponse = await fetch('missions/custom.json');
+                if (!customResponse.ok) {
+                    throw new Error('Failed to load custom missions data');
+                }
+                customMissions = await customResponse.json();
+                
+                console.log('Missions data loaded:', 
+                    classicMissions.missions.length, 'classic missions,',
+                    customMissions.missions.length, 'custom missions');
             } catch (error) {
                 console.error('Error loading missions:', error);
                 document.getElementById('results').innerHTML = `
                     <div class="error">
-                        ❌ Error loading missions data. Please make sure the missions/classic.json file is available.
+                        ❌ Error loading missions data. Please make sure the mission files are available.
                     </div>
                 `;
+            }
+        }
+        
+        // Get selected mission set
+        function getSelectedMissions() {
+            const missionSet = document.getElementById('missionSet').value;
+            
+            switch (missionSet) {
+                case 'classic':
+                    return classicMissions ? classicMissions.missions : [];
+                case 'custom':
+                    return customMissions ? customMissions.missions : [];
+                case 'mixed':
+                    if (!classicMissions || !customMissions) return [];
+                    return [...classicMissions.missions, ...customMissions.missions];
+                default:
+                    return [];
             }
         }
         
@@ -312,7 +350,9 @@
         
         // Generate missions based on user input
         function generateMissions() {
-            if (!missionsData) {
+            const selectedMissions = getSelectedMissions();
+            
+            if (!selectedMissions || selectedMissions.length === 0) {
                 document.getElementById('results').innerHTML = `
                     <div class="error">
                         ❌ Missions data not loaded yet. Please wait and try again.
@@ -323,6 +363,7 @@
             
             const players = parseInt(document.getElementById('players').value);
             const difficulty = parseInt(document.getElementById('difficulty').value);
+            const missionSetName = document.getElementById('missionSet').options[document.getElementById('missionSet').selectedIndex].text;
             
             if (!difficulty || difficulty < 1) {
                 document.getElementById('results').innerHTML = `
@@ -335,18 +376,18 @@
             
             document.getElementById('results').innerHTML = `
                 <div class="loading">
-                    🎲 Generating missions...
+                    🎲 Generating missions from ${missionSetName}...
                 </div>
             `;
             
             // Add a small delay to show loading state
             setTimeout(() => {
-                const selectedMissions = selectMissions(missionsData.missions, players, difficulty);
+                const result = selectMissions(selectedMissions, players, difficulty);
                 
-                if (!selectedMissions || selectedMissions.length === 0) {
+                if (!result || result.length === 0) {
                     document.getElementById('results').innerHTML = `
                         <div class="no-results">
-                            😔 No combination found for ${players} players with difficulty ${difficulty}.
+                            😔 No combination found for ${players} players with difficulty ${difficulty} using ${missionSetName}.
                             <br><br>
                             Try adjusting the target difficulty or try again for a different random combination.
                         </div>
@@ -354,20 +395,24 @@
                     return;
                 }
                 
-                const totalDifficulty = selectedMissions.reduce((sum, mission) => sum + mission.difficulty, 0);
+                const totalDifficulty = result.reduce((sum, mission) => sum + mission.difficulty, 0);
                 
                 let html = `
                     <div class="stats">
-                        🎯 Found ${selectedMissions.length} mission${selectedMissions.length !== 1 ? 's' : ''} for ${players} players 
-                        (Total Difficulty: ${totalDifficulty})
+                        🎯 Found ${result.length} mission${result.length !== 1 ? 's' : ''} for ${players} players using ${missionSetName}
+                        <br>(Total Difficulty: ${totalDifficulty})
                     </div>
                 `;
                 
-                selectedMissions.forEach((mission, index) => {
+                result.forEach((mission, index) => {
+                    const isCustomMission = mission.id >= 101;
+                    const missionTypeIcon = isCustomMission ? "⭐" : "🎯";
+                    const missionTypeLabel = isCustomMission ? "Custom" : "Classic";
+                    
                     html += `
                         <div class="mission-card">
                             <div class="mission-header">
-                                <span class="mission-id">Mission ${mission.id}</span>
+                                <span class="mission-id">${missionTypeIcon} Mission ${mission.id}</span>
                                 <span class="mission-difficulty">Difficulty: ${mission.difficulty}</span>
                             </div>
                             <div class="mission-description">
