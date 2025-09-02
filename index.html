@@ -730,7 +730,7 @@
                 let html = `
                     <div class="stats">
                         ${methodIcon} ${methodName}: Found ${result.selected.length} mission${result.selected.length !== 1 ? 's' : ''} for ${players} players using ${missionSetName}
-                        <br>(Mission Difficulty: ${missionDifficulty}${modifierDifficulty > 0 ? ` + Modifier Difficulty: ${modifierDifficulty} = Total: ${totalDifficulty}` : ''})
+                        <br>(Mission Difficulty: ${missionDifficulty}${modifierDifficulty !== 0 ? ` ${modifierDifficulty >= 0 ? '+' : ''} Modifier Difficulty: ${modifierDifficulty} = Total: ${totalDifficulty}` : ''})
                 `;
                 
                 if (method === 'deck' && result.skipped.length > 0) {
@@ -738,6 +738,17 @@
                 }
                 
                 html += `</div>`;
+                
+                // Add a high difficulty warning about card limitations
+                const maxRounds = players === 3 ? 13 : (players === 4 ? 10 : 8); // 40 cards divided by players
+                if (totalDifficulty >= 12) {
+                    html += `
+                        <div style="margin-bottom: 15px; padding: 15px; background: #e3f2fd; border: 1px solid #2196f3; border-radius: 8px; color: #1565c0;">
+                            💡 <strong>High Difficulty Challenge:</strong> With ${players} players, you have only ${maxRounds} rounds (40 cards ÷ ${players} players) to complete these missions. 
+                            This is quite challenging - give it your best shot and remember that communication and teamwork are key!
+                        </div>
+                    `;
+                }
                 
                 // Add a warning if we had to settle for much lower difficulty
                 if (result.distance && result.distance > 3) {
