@@ -7,7 +7,7 @@
         "4_players": 4,
         "5_players": 5
       },
-      "description": "Win tricks in ascending order of card values (lowest to highest)"
+      "description": "Each trick you win must have a higher winning card value than your previous won trick"
     },
     {
       "id": 102,
@@ -25,7 +25,7 @@
         "4_players": 5,
         "5_players": 6
       },
-      "description": "Win exactly one trick of each color (4 tricks total)"
+      "description": "Win exactly 4 tricks, each won with a different color card (one per color, no submarines)"
     },
     {
       "id": 104,
@@ -34,7 +34,7 @@
         "4_players": 2,
         "5_players": 3
       },
-      "description": "Win more cards with prime numbers (2,3,5,7) than composite numbers"
+      "description": "Win more cards with prime number values (2,3,5,7) than composite number values (4,6,8,9)"
     },
     {
       "id": 105,
@@ -52,7 +52,7 @@
         "4_players": 2,
         "5_players": 2
       },
-      "description": "Win the highest and lowest valued cards in the game"
+      "description": "Win a 9 and a 1 (any color)"
     },
     {
       "id": 107,
@@ -66,11 +66,11 @@
     {
       "id": 108,
       "difficulty": {
-        "3_players": 2,
+        "3_players": 3,
         "4_players": 3,
-        "5_players": 3
+        "5_players": 4
       },
-      "description": "Win 4 consecutive numbered cards of the same color (e.g., Blue 1, 2, 3, 4)"
+      "description": "Win 4 consecutive numbered cards of the same color (e.g., Blue 3, 4, 5, 6)"
     },
     {
       "id": 109,
@@ -79,16 +79,16 @@
         "4_players": 4,
         "5_players": 5
       },
-      "description": "Win exactly half of all cards played (rounded down)"
+      "description": "Win exactly half the tricks (rounded down): 6/5/4 tricks for 3/4/5 players"
     },
     {
       "id": 110,
       "difficulty": {
-        "3_players": 2,
-        "4_players": 2,
-        "5_players": 3
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 4
       },
-      "description": "Win the last card played of each color"
+      "description": "Win the trick that contains the last card played of each color (4 specific tricks)"
     },
     {
       "id": 111,
@@ -97,7 +97,7 @@
         "4_players": 3,
         "5_players": 3
       },
-      "description": "Win a trick using only a submarine, but not the first or last trick"
+      "description": "Win a trick by playing a submarine, but not in the first or last trick"
     },
     {
       "id": 112,
@@ -106,7 +106,7 @@
         "4_players": 1,
         "5_players": 2
       },
-      "description": "Win more red cards (pink) than any other single color"
+      "description": "Win more pink cards than any other single color"
     },
     {
       "id": 113,
@@ -115,7 +115,7 @@
         "4_players": 4,
         "5_players": 4
       },
-      "description": "Win tricks in a pattern: high card, low card, high card, low card"
+      "description": "Your winning card values must alternate: above 5, then 5 or below, repeating (at least 3 tricks)"
     },
     {
       "id": 114,
@@ -124,7 +124,7 @@
         "4_players": 3,
         "5_players": 4
       },
-      "description": "Win exactly one card from each suit that adds up to 20"
+      "description": "Among your won cards, have exactly one from each color suit whose values sum to 20"
     },
     {
       "id": 115,
@@ -133,34 +133,34 @@
         "4_players": 3,
         "5_players": 3
       },
-      "description": "Never be the first to play a card in any trick"
+      "description": "Never lead (play first) in any trick (the captain can't take this mission)"
     },
     {
       "id": 116,
       "difficulty": {
-        "3_players": 2,
-        "4_players": 2,
-        "5_players": 2
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 3
       },
-      "description": "Win cards whose values create a Fibonacci sequence (1,1,2,3,5,8...)"
+      "description": "Win cards with values that include at least 4 consecutive Fibonacci numbers (e.g., 1,2,3,5 or 2,3,5,8)"
     },
     {
       "id": 117,
       "difficulty": {
         "3_players": 3,
         "4_players": 4,
-        "5_players": 5
+        "5_players": 4
       },
-      "description": "Win the middle trick and have the middle total card value"
+      "description": "Win the middle trick of the game (trick 7/5/4 for 3/4/5 players)"
     },
     {
       "id": 118,
       "difficulty": {
         "3_players": 2,
-        "4_players": 2,
-        "5_players": 3
+        "4_players": 3,
+        "5_players": 4
       },
-      "description": "Win a rainbow trick (one card of each color, no submarines)"
+      "description": "Win a trick where all cards are different colors (no submarines). Needs 3/4/4 different colors for 3/4/5 players"
     },
     {
       "id": 119,
@@ -169,16 +169,16 @@
         "4_players": 3,
         "5_players": 4
       },
-      "description": "Win all your tricks with the same color lead card"
+      "description": "Win all your tricks with the same color as the lead card (at least 2 tricks)"
     },
     {
       "id": 120,
       "difficulty": {
-        "3_players": 1,
+        "3_players": 2,
         "4_players": 2,
         "5_players": 3
       },
-      "description": "Win a trick where the total value equals the trick number (trick 3 totals 3, etc.)"
+      "description": "Win a trick where the total card value equals the trick number (e.g., trick 5 totals exactly 5)"
     },
     {
       "id": 121,
@@ -187,7 +187,7 @@
         "4_players": 5,
         "5_players": 6
       },
-      "description": "Win tricks in alphabetical order by color (Blue, Green, Pink, Yellow)"
+      "description": "Win tricks whose lead card colors follow alphabetical order: Blue, Green, Pink, Yellow (at least 4 tricks)"
     },
     {
       "id": 122,
@@ -196,7 +196,7 @@
         "4_players": 3,
         "5_players": 3
       },
-      "description": "Win the same number of odd and even valued cards (at least 2 of each)"
+      "description": "Win the same number of odd-valued (1,3,5,7,9) and even-valued (2,4,6,8) cards (at least 2 of each)"
     },
     {
       "id": 123,
@@ -205,7 +205,7 @@
         "4_players": 3,
         "5_players": 4
       },
-      "description": "Win a 'bookend' pattern: highest card first trick, lowest card last trick"
+      "description": "Win the first trick with a card valued 7 or higher, and the last trick with a card valued 3 or lower"
     },
     {
       "id": 124,
@@ -214,7 +214,7 @@
         "4_players": 2,
         "5_players": 2
       },
-      "description": "Win cards that create a 'straight' in at least one color (3 consecutive numbers)"
+      "description": "Win cards that include 3 consecutive numbers in the same color (e.g., Green 4, 5, 6)"
     },
     {
       "id": 125,
@@ -223,7 +223,97 @@
         "4_players": 4,
         "5_players": 5
       },
-      "description": "Win every trick where you play the captain's favorite color (decided at start)"
+      "description": "The captain declares a color at the start. Win every trick where you play a card of that color"
+    },
+    {
+      "id": 126,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win a trick where all cards are the same color (no submarines)"
+    },
+    {
+      "id": 127,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win no odd-numbered tricks (1st, 3rd, 5th, etc.) but win at least one even-numbered trick"
+    },
+    {
+      "id": 128,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 1,
+        "5_players": 2
+      },
+      "description": "Win at least one trick in the first half and at least one trick in the second half of the game"
+    },
+    {
+      "id": 129,
+      "difficulty": {
+        "3_players": 1,
+        "4_players": 2,
+        "5_players": 3
+      },
+      "description": "Win a trick that contains two cards of the same value (a pair)"
+    },
+    {
+      "id": 130,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 5
+      },
+      "description": "Win the 9 of at least 3 different colors"
+    },
+    {
+      "id": 131,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 3
+      },
+      "description": "Don't win any trick where the lead card is pink"
+    },
+    {
+      "id": 132,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 2,
+        "5_players": 3
+      },
+      "description": "Win a trick with a total card value of exactly 15"
+    },
+    {
+      "id": 133,
+      "difficulty": {
+        "3_players": 2,
+        "4_players": 3,
+        "5_players": 3
+      },
+      "description": "Win more tricks in the second half of the game than the first half"
+    },
+    {
+      "id": 134,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 4,
+        "5_players": 5
+      },
+      "description": "Win every trick that contains a 9 (any color)"
+    },
+    {
+      "id": 135,
+      "difficulty": {
+        "3_players": 3,
+        "4_players": 3,
+        "5_players": 4
+      },
+      "description": "Win a trick by leading with a 1 (no submarines allowed in the trick)"
     }
   ]
 }
