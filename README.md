@@ -30,13 +30,21 @@ Visit the live web interface at: **[https://sn2b.github.io/the-crew-mission-crea
 
 ```
 ├── index.html              # Mission Generator Web interface
+├── styles.css              # Application styles
+├── js/
+│   ├── constants.js        # Configuration constants
+│   ├── algorithms.js       # Mission selection algorithms
+│   ├── modifiers.js        # Modifier selection logic
+│   ├── renderer.js         # HTML rendering functions
+│   ├── storage.js          # localStorage persistence
+│   └── app.js              # Application orchestration
 ├── missions/
 │   ├── classic.json        # Classic missions (JSON format)
 │   ├── custom.json         # Custom missions (JSON format)
 │   └── modifiers.json      # Challenge modifiers (JSON format)
 ├── .github/workflows/
-│   └── pages.yml          # GitHub Pages deployment
-└── README.md              # This file
+│   └── pages.yml           # GitHub Pages deployment
+└── README.md               # This file
 ```
 
 ## � Quick Start
